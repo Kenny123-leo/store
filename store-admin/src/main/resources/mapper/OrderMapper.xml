@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--namespace属性：用于指定当前的映射文件和哪个接口进行映射，需要指定接口的文件路径，需要标注报的完整路径接口-->
+<mapper namespace="com.store.storeadmin.mapper.OrderMapper">
+    <resultMap id="OrderMap" type="com.store.storeadmin.pojo.Order">
+        <id column="oid" property="oid"/>
+        <result column="recv_name" property="recvName"/>
+        <result column="recv_phone" property="recvPhone"/>
+        <result column="recv_province" property="recvProvince"/>
+        <result column="recv_city" property="recvCity"/>
+        <result column="recv_area" property="recvArea"/>
+        <result column="recv_address" property="recvAddress"/>
+        <result column="total_price" property="totalPrice"/>
+        <result column="status" property="status"/>
+        <result column="order_time" property="orderTime"/>
+    </resultMap>
+    <delete id="deleteByOid">
+        DELETE FROM t_order WHERE oid=#{oid}
+    </delete>
+
+    <select id="findOrders" resultMap="OrderMap">
+        select oid,recv_name,recv_phone,recv_province,recv_city,recv_area,recv_address,total_price,status,order_time
+        from t_order;
+    </select>
+</mapper>

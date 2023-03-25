@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<!--edge浏览器H5兼容设置-->
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<!--360浏览器H5兼容设置-->
+		<meta name="renderer" content="webkit" />
+		<title>耳机商城</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<!--导入核心文件-->
+		<script src="../bootstrap3/js/holder.js"></script>
+		<link href="../bootstrap3/css/bootstrap.css" rel="stylesheet" type="text/css">
+		<script src="../bootstrap3/jquery-1.9.1.min.js"></script>
+		<script src="../bootstrap3/js/bootstrap.js"></script>
+		<!-- 字体图标 -->
+		<link rel="stylesheet" href="../bootstrap3/font-awesome-4.7.0/css/font-awesome.css" />
+		<link rel="stylesheet" type="text/css" href="../css/layout.css" />
+		<link rel="stylesheet" type="text/css" href="../css/top.css" />
+		<link rel="stylesheet" type="text/css" href="../css/footer.css" />
+		<link rel="stylesheet" type="text/css" href="../css/order.css" />
+		<script src="../bootstrap3/js/jquery.cookie.js" type="text/javascript" charset="utf-8"></script>
+	</head>
+
+	<body>
+		<!--头部开始-->
+		<header class="header"></header>
+		<!--头部结束-->
+		<div class="container">
+			<div class="col-md-2">
+				<!--左侧导航开始-->
+				<div class="panel-group" id="accordion">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<!--主选项：我的订单-->
+							<p class="panel-title">
+								<a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">我的订单</a>
+							</p>
+						</div>
+						<div id="collapseOne" class="panel-collapse collapse in">
+							<div class="panel-body">
+								<div><a href="orders.html"><b>全部订单</b></a></div>
+								<div><a href="orders.html">待付款</a></div>
+								<div><a href="orders.html">待收货</a></div>
+								<div><a href="orders.html">待评价</a></div>
+								<div><a href="orders.html">退货退款</a></div>
+							</div>
+						</div>
+					</div>
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<!--主选项：资料修改-->
+							<p class="panel-title">
+								<a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">资料修改</a>
+							</p>
+						</div>
+						<div id="collapseTwo" class="panel-collapse collapse">
+							<div class="panel-body">
+								<div><a href="password.html"><b>修改密码</b></a></div>
+								<div><a href="userdata.html">个人资料</a></div>
+								<div><a href="upload.html">上传头像</a></div>
+								<div><a href="address.html">收货管理</a></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!--左侧导航结束-->
+			<div class="col-md-10" id="order-list">
+
+			</div>
+		</div>
+
+		<!--页脚开始-->
+		<div class="footer"></div>
+		<!--页脚结束-->
+
+	<script type="text/javascript">
+
+
+
+
+		function showOrderList(){
+			// 清空标签中的数据
+			$("#order-list").empty();
+			$.ajax({
+				url:"/orders/find_orders",
+				type:"get",
+				dataType:"json",
+				success:function (json) {
+					let list = json.data;
+					console.log(list);
+					let lastoid = 0;
+
+					for (let i = 0;i < list.length;i++){
+
+						let nowOid = list[i].oid;
+						console.log(nowOid);
+
+						if (nowOid == lastoid){
+							let tr = '<tr id="#{oid}">\n' +
+									'<td><img src="..#{image}collect.png" class="img-responsive" /></td>\n' +
+									'<td>#{title}</td>\n' +
+									'<td>¥<span>#{price}</span></td>\n' +
+									'<td>#{num}件</td>\n' +
+									'<td>¥<span>#{littlePrice}</span></td>\n' +
+									'<td><a href="#">申请售后</a></td>\n' +
+									'<td>\n' +
+									'\t<div>#{status}</div>\n' +
+									'\t<div><a href="orderInfo.html">订单详情</a></div>\n' +
+									'</td>\n' +
+									'<td><a href="#" class="btn btn-default btn-xs">确认收货</a></td>\n' +
+									'</tr>';
+
+							tr = tr.replace(/#{oid}/g,list[i].oid);
+							tr = tr.replace(/#{image}/g,list[i].image);
+							tr = tr.replace(/#{title}/g,list[i].title);
+							tr = tr.replace(/#{price}/g,list[i].price);
+							tr = tr.replace(/#{num}/g,list[i].num);
+							tr = tr.replace(/#{littlePrice}/g,list[i].price * list[i].num);
+							tr = tr.replace(/#{status}/g,list[i].strstatus);
+
+							$(".orders-body").append(tr);
+
+						}else{
+							lastoid = nowOid;
+							let div = '<div class="panel panel-default">\n' +
+									'<div class="panel-heading">\n' +
+									'<p class="panel-title">\n' +
+									'订单号：#{oid}，下单时间：#{orderTime} ， 收货人：#{recvName}\n' +
+									'</p>\n' +
+									'</div>\n' +
+									'<div class="panel-body">\n' +
+									'<table class="orders-table" width="100%">\n' +
+									'<thead>\n' +
+									'<tr>\n' +
+									'<th width="15%"></th>\n' +
+									'<th width="30%">商品</th>\n' +
+									'<th width="8%">单价</th>\n' +
+									'<th width="8%">数量</th>\n' +
+									'<th width="9%">小计</th>\n' +
+									'<th width="10%">售后</th>\n' +
+									'<th width="10%">状态</th>\n' +
+									'<th width="10%">操作</th>\n' +
+									'</tr>\n' +
+									'</thead>\n' +
+									'<tbody class="orders-body">\n' +
+									'<tr id="#{oid}">\n' +
+									'<td><img src="..#{image}collect.png" class="img-responsive" /></td>\n' +
+									'<td>#{title}</td>\n' +
+									'<td>¥<span>#{price}</span></td>\n' +
+									'<td>#{num}件</td>\n' +
+									'<td>¥<span>#{littlePrice}</span></td>\n' +
+									'<td><a href="#">申请售后</a></td>\n' +
+									'<td>\n' +
+									'\t<div>#{status}</div>\n' +
+									'\t<div><a href="orderInfo.html">订单详情</a></div>\n' +
+									'</td>\n' +
+									'<td><a href="#" class="btn btn-default btn-xs">确认收货</a></td>\n' +
+									'</tr>\n' +
+									'</tbody>\n' +
+									'</table>\n' +
+									'<div>\n' +
+									'<span class="pull-right">订单总金额：¥#{totalPrice}</span>\n' +
+									'</div>\n' +
+									'</div>\n' +
+									'</div>';
+							div = div.replace(/#{oid}/g,list[i].oid);
+							div = div.replace(/#{orderTime}/g,list[i].orderTime);
+							div = div.replace(/#{recvName}/g,list[i].recvName);
+							div = div.replace(/#{oid}/g,list[i].oid);
+							div = div.replace(/#{image}/g,list[i].image);
+							div = div.replace(/#{title}/g,list[i].title);
+							div = div.replace(/#{price}/g,list[i].price);
+							div = div.replace(/#{num}/g,list[i].num);
+							div = div.replace(/#{littlePrice}/g,list[i].price * list[i].num);
+							div = div.replace(/#{status}/g,list[i].strstatus);
+							div = div.replace(/#{totalPrice}/g,list[i].totalPrice);
+
+							$("#order-list").append(div);
+						}
+
+					}
+
+				},
+				error:function (xhr) {
+					alert("购物车列表数据加载时产生未知的异常" + xhr.status);
+				}
+			});
+		};
+
+		$(function () {
+			//引入公共头部、中间导航条以及页脚
+			$('.header').load('topTemplate.html',function (responseTxt,statusTxt,xhr){
+				console.log('responseTxt,statusTxt,xhr')
+			})
+			$('.footer').load('footerTemplate.html',function (responseTxt,statusTxt,xhr){
+				console.log('responseTxt,statusTxt,xhr')
+			})
+
+			//查询用户订单
+			showOrderList();
+
+		})
+
+
+
+	</script>
+	</body>
+
+</html>

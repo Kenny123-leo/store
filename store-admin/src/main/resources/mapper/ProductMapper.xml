@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--namespace属性：用于指定当前的映射文件和哪个接口进行映射，需要指定接口的文件路径，需要标注报的完整路径接口-->
+<mapper namespace="com.store.storeadmin.mapper.ProductMapper">
+    <resultMap id="ProductMap" type="com.store.storeadmin.pojo.Product">
+        <id column="id" property="id"/>
+        <result column="item_type" property="itemType"/>
+        <result column="price" property="price"/>
+        <result column="num" property="num"/>
+    </resultMap>
+    <delete id="deleteById">
+        DELETE FROM t_product WHERE id=#{id}
+    </delete>
+
+    <select id="findProducts" resultMap="ProductMap">
+        select id,item_type,price,num from t_product;
+    </select>
+
+</mapper>

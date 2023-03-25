@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--namespace属性：用于指定当前的映射文件和哪个接口进行映射，需要指定接口的文件路径，需要标注报的完整路径接口-->
+<mapper namespace="com.store.storeadmin.mapper.AdminMapper">
+    <resultMap id="UserInfoVOMap" type="com.store.storeadmin.vo.UserInfoVO">
+        <id column="uid" property="uid"/>
+        <result column="username" property="username"/>
+        <result column="password" property="password"/>
+        <result column="phone" property="phone"/>
+        <result column="province_name" property="provinceName"/>
+        <result column="city_name" property="cityName"/>
+        <result column="area_name" property="areaName"/>
+    </resultMap>
+    <delete id="deleteByUid">
+        DELETE FROM t_user WHERE uid=#{uid}
+    </delete>
+
+    <select id="findUserInfo" resultMap="UserInfoVOMap">
+        select t_user.uid,t_user.username,t_user.`password`,t_user.phone,
+               t_address.province_name,t_address.city_name,t_address.area_name,t_address.address
+        from t_user
+                 LEFT JOIN t_address on t_user.uid = t_address.uid;
+    </select>
+
+
+</mapper>
